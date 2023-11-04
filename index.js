@@ -28,24 +28,24 @@ app.use((req, res, next) => {
 
 
 app.get('/login', auth.authenticate('saml', config.saml.options), (req, res, next) => {
-    return res.redirect('/homepage');
+    return res.redirect('/');
 })
 
 app.post('/login', auth.authenticate('saml', config.saml.options), (req, res, next) => {
-    return res.redirect('/homepage');
+    return res.redirect('/');
 })
 
-app.get('/homepage', auth.protected, (req, res) => {
+app.get('/', auth.protected, (req, res) => {
     res.cookie('username', btoa(req.user.nameID), { maxAge: 12 * 60 * 60 * 1000, httpOnly: true })
     res.sendfile('index.html')
 });
 
-app.get('/', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.redirect('/homepage')
-    }
-    else res.redirect('login')
-})
+// app.get('/', (req, res) => {
+//     if (req.isAuthenticated()) {
+//         res.redirect('/homepage')
+//     }
+//     else res.redirect('login')
+// })
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
