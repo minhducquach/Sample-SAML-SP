@@ -23,6 +23,8 @@ passport.use(
             cert: fs.readFileSync(config.saml.cert, 'utf-8')
         },
         (expressUser, done) => {
+            xml = expressUser.getSamlResponseXml()
+            console.log(xml)
             if (!savedUsers.includes(expressUser)) {
                 savedUsers.push(expressUser);
             }
@@ -32,6 +34,7 @@ passport.use(
 );
 
 passport.protected = function protected(req, res, next) {
+    // console.log("LOGS:", req)
     console.log('Logged in: ' + req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
