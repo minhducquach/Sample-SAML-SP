@@ -26,18 +26,17 @@ passport.use(
             if (!savedUsers.includes(expressUser)) {
                 savedUsers.push(expressUser);
             }
-
             return done(null, expressUser);
         }
     )
 );
 
 passport.protected = function protected(req, res, next) {
-    console.log('Login Profile' + req.isAuthenticated());
+    console.log('Logged in: ' + req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
     }
-    console.log('Not Login' + req.isAuthenticated());
+    console.log('Logged in: ' + req.isAuthenticated());
     res.redirect('/login');
 };
 

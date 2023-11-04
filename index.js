@@ -36,6 +36,7 @@ app.post('/login/callback', auth.authenticate('saml', config.saml.options), (req
 })
 
 app.get('/homepage', auth.protected, (req, res) => {
+    res.cookie('username', btoa(req.user.nameID), { maxAge: 12 * 60 * 60 * 1000, httpOnly: true })
     res.sendfile('index.html')
 });
 
