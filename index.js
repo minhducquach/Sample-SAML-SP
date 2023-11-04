@@ -5,7 +5,7 @@ const config = require("./saml-config/config")
 const session = require('express-session')
 
 const app = express()
-const port = 2000
+const port = 3000
 
 app.use(express.json());
 app.use(session(config.session));
