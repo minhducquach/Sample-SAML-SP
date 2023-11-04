@@ -18,7 +18,7 @@ passport.use(
         {
             issuer: config.saml.issuer,
             protocol: 'http://',
-            path: '/login/callback',
+            path: '/login/success',
             entryPoint: config.saml.entryPoint,
             cert: fs.readFileSync(config.saml.cert, 'utf-8')
         },
