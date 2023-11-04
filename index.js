@@ -31,7 +31,7 @@ app.get('/login', auth.authenticate('saml', config.saml.options), (req, res, nex
     return res.redirect('/homepage');
 })
 
-app.post('/login/callback', auth.authenticate('saml', config.saml.options), (req, res, next) => {
+app.post('/login', auth.authenticate('saml', config.saml.options), (req, res, next) => {
     return res.redirect('/homepage');
 })
 
