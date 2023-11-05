@@ -5,11 +5,11 @@ const config = require("./saml-config/config")
 const session = require('express-session')
 
 const app = express()
-const port = 2000
+const port = 3000
 
 app.use(express.json());
 app.use(session(config.session));
-app.use(auth.initialize());
+app.use(auth.initialize());     
 app.use(auth.session());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -25,25 +25,30 @@ app.use((req, res, next) => {
     }
     next()
 });
-
+let redirect = ''
 
 app.get('/login', auth.authenticate('saml', config.saml.options), (req, res, next) => {
     return res.redirect('/homepage');
 })
 
-app.post('/login/callback', auth.authenticate('saml', config.saml.options), (req, res, next) => {
+app.post('/login/success', auth.authenticate('saml', config.saml.options), (req, res, next) => {
     return res.redirect('/homepage');
 })
 
 app.get('/homepage', auth.protected, (req, res) => {
-    res.sendfile('index.html')
+    const data = req.user.nameID
+    res.cookie('email',data)
+    res.cookie('isAuthen','TRUE')
+    return res.redirect(`${redirect}`);
 });
 
 app.get('/', (req, res) => {
+    const {redirectURL} = req.query
+    redirect  =  redirectURL 
     if (req.isAuthenticated()) {
         res.redirect('/homepage')
     }
-    else res.redirect('login')
+    else res.redirect(`/login`)
 })
 
 app.listen(port, () => {
