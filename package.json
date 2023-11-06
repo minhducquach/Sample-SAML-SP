@@ -15,5 +15,8 @@
     "passport-saml": "^3.2.4",
     "saml-lib": "^0.1.14",
     "saml20": "^0.1.14"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
   }
 }

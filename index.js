@@ -4,7 +4,7 @@ const auth = require("./saml-config/passport")
 const config = require("./saml-config/config")
 const session = require('express-session')
 var saml = require('saml20');
-
+var jwt = require('jsonwebtoken');
 const app = express()
 const port = 3000
 
@@ -54,16 +54,11 @@ app.post('/login/success', auth.authenticate('saml', config.saml.options), (req,
         XPLTk5AMIt/NRRZWxtL6BGQD9/vhdjyQHnGfcw==`,
         audience: 'http://localhost:3000'
     }
-    
     const rawAssertion = req.user.getAssertionXml()
     saml.validate(rawAssertion, options, function(err, profile) {
-        // err
         if(profile){
-
             return res.redirect('/homepage');
         }
-        // var claims = profile.claims; // Array of user attributes;
-        // var issuer = profile.issuer; // String Issuer name.
     });
 
     
@@ -71,8 +66,8 @@ app.post('/login/success', auth.authenticate('saml', config.saml.options), (req,
 
 app.get('/homepage', auth.protected, (req, res) => {
     const data = req.user.nameID
-    res.cookie('email',data)
-    res.cookie('isAuthen','TRUE')
+    var token = jwt.sign({ email: data, isAuthen: true }, 'secret', {expiresIn: 60 * 60 });
+    res.cookie('SAML_ASSERTION',token)
     return res.redirect(`${redirect}`);
 });
 
