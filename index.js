@@ -6,7 +6,7 @@ const session = require('express-session')
 var saml = require('saml20');
 var jwt = require('jsonwebtoken');
 const app = express()
-const port = 3000
+const port = 3000;
 
 app.use(express.json());
 app.use(session(config.session));
@@ -32,8 +32,8 @@ app.get('/login', auth.authenticate('saml', config.saml.options), (req, res, nex
     return res.redirect('/homepage');
 })
 
-app.post('/login/success', auth.authenticate('saml', config.saml.options), (req, res, next) => {
 
+app.post('/login/success', auth.authenticate('saml', config.saml.options), (req, res, next) => {
     var options = {
         publicKey: `MIIDqDCCApCgAwIBAgIGAYrr7ImhMA0GCSqGSIb3DQEBCwUAMIGUMQswCQYDVQQGEwJVUzETMBEG
         A1UECAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzENMAsGA1UECgwET2t0YTEU
@@ -60,24 +60,19 @@ app.post('/login/success', auth.authenticate('saml', config.saml.options), (req,
             return res.redirect('/homepage');
         }
     });
-
-    
 })
 
-app.get('/homepage', auth.protected, (req, res) => {
+app.get('/homepage', auth.protected, async (req, res) => {
     const data = req.user.nameID
     var token = jwt.sign({ email: data, isAuthen: true }, 'secret', {expiresIn: 60 * 60 });
     res.cookie('SAML_ASSERTION',token)
     return res.redirect(`${redirect}`);
 });
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => {    
     const {redirectURL} = req.query
-    redirect  =  redirectURL 
-    if (req.isAuthenticated()) {
-        res.redirect('/homepage')
-    }
-    else res.redirect(`/login`)
+    redirect = redirectURL ;
+    res.redirect(`/login`)
 })
 
 app.listen(port, () => {
